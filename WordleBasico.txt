@@ -1,0 +1,111 @@
+public void WordleBasico()
+{
+    Console.WriteLine("Juego de Wordle Básico");
+    Console.WriteLine("------------------");
+    Console.WriteLine();
+
+    List<string> palabras = new List<string> {"tetas", "mamelas", "paco", "pacomersela", "hostiaputatio", "pescadito", "bakugan" };
+
+    Random random = new Random();
+
+    string entrada = "";
+    int aleatoria = random.Next(0, palabras.Count);
+    string palabraClave = palabras[aleatoria];
+    int vidas = 5;
+    ImprimirGuiones(palabraClave);
+    Console.WriteLine();
+
+    do
+    {
+        Console.Write("Escribe una palabra para intentar acertar: ");
+        try
+        {
+            do
+            {
+                entrada = Console.ReadLine();
+                if(string.IsNullOrEmpty(entrada))
+                {
+                    Console.Write("Introduce al menos un intento: ");
+                }
+            } while (string.IsNullOrEmpty(entrada));
+            
+            entrada = NormalizarPalabra(entrada, palabraClave);
+        }catch(Exception e) {  Console.WriteLine($"{e.Message}"); }
+        Console.WriteLine();
+
+        for (int i = 0; i < palabraClave.Length; i++)
+        {
+            if (entrada[i] == palabraClave[i])
+            {
+                Console.Write(palabraClave[i] + " ");
+            }
+            else { Console.Write("_ "); }
+        }
+
+        Console.WriteLine();
+        Console.WriteLine();
+        Console.WriteLine();
+
+        if (entrada == palabraClave)
+        {
+            Console.WriteLine($"Has acertado, la palabra era {palabraClave}");
+            break;
+        }
+        else
+        {
+            vidas--;
+            if (vidas == 0)
+            {
+                Console.WriteLine("Te has quedado sin vidas, mala suerte.");
+                Console.WriteLine($"La palabra era {palabraClave}");
+                string respuesta = Repetir();
+
+                if (respuesta == "s")
+                {
+                    Console.Clear();
+                    WordleBasico();
+                }
+                else { Console.WriteLine("Hasta aqui el juego."); break; } 
+            }
+            Console.WriteLine("Sigue intentandolo.");
+            Console.WriteLine($"Te quedan {vidas} vidas");
+        }
+    } while (vidas > 0);
+    Console.ReadKey();
+
+    void ImprimirGuiones(string palabra)
+    {
+        for (int i = 0; i < palabra.Length; i++)
+        {
+            Console.Write("_ ");
+        }
+        Console.WriteLine();
+    }
+    
+    string NormalizarPalabra(string entrada, string palabraClave)
+    {
+        for (int i = 0; i < palabraClave.Length; i++)
+        {
+            if (entrada.Length < palabraClave.Length)
+            {
+                entrada = entrada + " ";
+            }
+        }
+        entrada = entrada.ToLower();   
+        return entrada;
+    }
+    string Repetir()
+    {
+        string respuesta = "";
+        do
+        {
+            try
+            {
+                Console.Write("¿Quieres volver a jugar? (S/N): ");
+                respuesta = Console.ReadLine();
+                respuesta = respuesta.ToLower();
+            }catch (Exception e) { Console.WriteLine($"{e.Message}"); }
+        } while (respuesta != "s" && respuesta != "n");
+        return respuesta;
+    }
+}
